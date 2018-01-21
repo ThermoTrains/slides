@@ -2,7 +2,6 @@ const gulp = require('gulp');
 const gutil = require('gulp-util');
 const gls = require('gulp-live-server');
 const nunjucksRender = require('gulp-nunjucks-render');
-const sass = require('gulp-sass');
 
 const runSequence = require('run-sequence');
 const del = require('del');
@@ -31,8 +30,7 @@ gulp.task('slides:js', () => {
 });
 
 gulp.task('slides:style', () => {
-  gulp.src('slides/styles/main.scss')
-    .pipe(sass().on('error', sass.logError))
+  gulp.src('slides/styles/main.css')
     .pipe(gulp.dest('build'));
 });
 
@@ -46,8 +44,7 @@ gulp.task('slides:deps', ['slides:deps:styles'], () => {
 });
 
 gulp.task('slides:deps:styles', () => {
-  gulp.src('{node_modules/reveal.js/css/reveal.scss,node_modules/reveal.js/**/*.css}')
-    .pipe(sass().on('error', sass.logError))
+  gulp.src('{node_modules/reveal.js/css/reveal.css,node_modules/reveal.js/**/*.css}')
     .pipe(gulp.dest('build'));
 });
 
