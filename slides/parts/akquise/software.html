@@ -13,7 +13,6 @@
          data-background-size="contain"
          data-background-video-loop>
 </section>
-<section data-background-image="images/software/detection/prime-tower-map.jpg"></section>
 
 <section>
   <h3>Detektionsalgorithmus</h3>
@@ -21,17 +20,20 @@
 <section data-background-image="images/software/detection/background.jpg" data-background-size="contain"></section>
 <section data-background-image="images/software/detection/train.jpg" data-background-size="contain"></section>
 <section data-background-image="images/software/detection/contours.jpg" data-background-size="contain"></section>
-<section data-background-image="images/software/detection/lights-on-tracks.jpg"
-         data-background-size="contain"></section>
+
 
 <section>
   <h4>Triggering</h4>
   <pre><code>double imageMean = calcMean(images)
 
-if (backgroundMean - imageMean > backgroundMean * threshold) {
+if (backgroundMean - imageMean &gt; backgroundMean * threshold) {
     changeState(ENTRY)
 }</code></pre>
 </section>
+
+<section data-background-image="images/software/detection/prime-tower-map.jpg"></section>
+<section data-background-image="images/software/detection/lights-on-tracks.jpg"
+         data-background-size="contain"></section>
 
 <section>
   <h4>Constraints</h4>
@@ -87,34 +89,90 @@ if (backgroundMean - imageMean > backgroundMean * threshold) {
 <section data-background-image="images/software/aufnahme-sequenz-diagramm.png"
          data-background-size="contain"></section>
 
-<!-- TODO Kompression -->
-<!--<section>-->
-  <!--<h3>Kompression IR Daten</h3>-->
-  <!--<ul>-->
-    <!--<li>16 Bit zu 8 Bit</li>-->
-    <!--<li>Genauigkeitsverlust</li>-->
-    <!--<li>Upload</li>-->
-  <!--</ul>-->
-<!--</section>-->
 
-<!--<section>-->
-  <!--<h3>Infrared Video Compression</h3>-->
-  <!--<pre><code>ushort[] original = ...-->
-<!--ushort min = min(original)-->
-<!--ushort max = max(original)-->
-<!--double factor = 256 / (max - min)-->
-<!--byte compressed = (original - min) * factor-->
-<!--ushort[] uncompressed = (compressed / factor) + min</code></pre>-->
-<!--</section>-->
+<section style="text-align: left;">
+  <h2>Kompression von Infrarotdaten</h2>
+  <ul>
+    <li>FLIR ATLAS SDK erzeugt SEQ Dateien</li>
+    <li>SEQ = FLIR FFF Dateien hintereinander gereiht</li>
+    <li>FFF = TIFF angereichert mit
+      <ul>
+        <li>proprietären EXIF Headern</li>
+        <li>gefüllt mit rohen A/D Counts</li>
+      </ul>
+    </li>
+  </ul>
+</section>
+
+<section style="text-align: left;">
+  <h3>SEQ Dateigrösse</h3>
+  <p>
+    20 Minuten<br>
+    <span class="fragment">* 60 Sekunden<br></span>
+    <span class="fragment">* 30 Frames<br></span>
+    <span class="fragment">* 16 Bit<br></span>
+    <span class="fragment">* 640 Pixel<br></span>
+    <span class="fragment">* 512 Pixel<br></span>
+    <span class="fragment"><b style="border-bottom: 3px double">= 189 GiB</b></span>
+  </p>
+</section>
+<section style="text-align: left;">
+  <h3>SEQ Dateigrösse</h3>
+  <p>
+    20 Minuten<br>
+    * 60 Sekunden<br>
+    * 1 Frame<br>
+    * 16 Bit<br>
+    * 640 Pixel<br>
+    * 512 Pixel<br>
+    <b style="border-bottom: 3px double">= 6.3 GiB</b>
+  </p>
+</section>
 
 <section>
-  <h3>FLIR SEQ Format</h3>
-  <ul>
-    <li>Proprietary format</li>
-    <li>Contains series of FFF files</li>
-    <li>FFF: Extended TIFF</li>
-    <li>Stores information in EXIF</li>
-  </ul>
+  <h3>Frames in Video komprimieren</h3>
+  <p>
+    Es gibt keinen 16 Bit Codec!
+  </p>
+  <ol>
+    <li>Kleinster und grösster Wert bestimmen</li>
+    <li>Jedem Pixel den kleinsten Wert abziehen</li>
+    <li>Die Auflösung auf 8 Bit reduzieren</li>
+    <li>Encodieren</li>
+  </ol>
+</section>
+
+<section>
+  <h3>Verlust berechnen</h3>
+  <pre style="text-align: center;"><code>Präzisionsverlust = Max(0, (1 - (256f / (max - min))) * 100)</code></pre>
+  <img src="images/software/compression-precision-loss.png">
+  <br>
+</section>
+
+<section>
+  <h3>Verlust berechnen</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>Verlust</th>
+      <th>Genauigkeit</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>0%</td>
+      <td>0.01°C</td>
+    </tr>
+    <tr>
+      <td>100%</td>
+      <td>0.625°C</td>
+    </tr>
+    <tr>
+      <td>80%</td>
+      <td class="fragment grow">0.125°C</td>
+    </tr>
+    </tbody>
+  </table>
 </section>
 
 <section>
@@ -131,3 +189,33 @@ if (backgroundMean - imageMean > backgroundMean * threshold) {
 <section data-background-image="images/software/monitoring-screenshot.jpg" data-background-size="contain"></section>
 <section data-background-image="images/software/screenshot-thermobox-cockpit.png"
          data-background-size="contain"></section>
+
+<section>
+  <h3>Aufnahmephasen</h3>
+  <table>
+    <thead>
+    <tr>
+      <th style="white-space: nowrap;">Phase Nr.</th>
+      <th>Zeitraum</th>
+      <th style="white-space: nowrap;">Aufnahmen</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>1</td>
+      <td style="white-space: nowrap;">20.11.2017 - 29.11.2017</td>
+      <td style="text-align: right;">273</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td style="white-space: nowrap;">19.12.2017 - 07.01.2018</td>
+      <td style="text-align: right;">306</td>
+    </tr>
+    <tr>
+      <td style="text-align: right;" colspan="3">
+        <b style="border-bottom: 3px double;">579</b>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</section>
