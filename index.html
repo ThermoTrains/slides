@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+
+  <title>Thermo Trains</title>
+
+  <meta name="description" content="Slides about an BFH and SBB Bachelor Project">
+  <meta name="author" content="Sebastian Häni, Raphael Laubscher">
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+  <link rel="stylesheet" href="css/reveal.css">
+  <link rel="stylesheet" href="css/theme/black.css" id="theme">
+  <link rel="stylesheet" href="main.css">
+
+  <!-- Printing and PDF exports -->
+  <script>
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+    document.getElementsByTagName('head')[0].appendChild(link);
+  </script>
+  <script src="lib/js/head.min.js"></script>
+  <script src="js/reveal.js"></script>
+</head>
+<body>
+
+<div class="reveal">
+  <div class="slides">
+    <section style="text-align: left">
+  <h1>Thermo Trains</h1>
+  <h4>Detektion von Isolationsproblemen an fahrenden Zügen</h4>
+
+  <p>
+    <small>Sebastian Häni, Raphael Laubscher</small>
+  </p>
+</section>
+
+<section data-background-image="images/pipeline/stitch/stitch_color.png" data-background-size="contain"></section>
+<section data-background-image="images/pipeline/stitch/stitch_ir.png" data-background-size="contain"></section>
+
+<section data-background-video="images/pipeline/stitch/stiching_result.mp4"
+         data-background-video-muted>
+</section>
+
+<section>
+  <h2>Vision</h2>
+  <ul style="list-style-type: none;">
+    <li>Automatische Erkennung von Isolationsdefekten</li>
+    <li>&nbsp;</li>
+    <li>&rarr; Energie sparen</li>
+    <li>&rarr; Instandhaltungskosten senken</li>
+  </ul>
+</section>
+
+<section data-background-image="images/energieeinsparung.png" data-background-size="contain">
+</section>
+
+<section data-background-image="images/instandhaltung.png"
+         data-background-size="contain"
+         style="text-align: left;">
+  <br><br><br><br><br><br><br><br><br><br><br><br>
+  <small style="position: absolute; bottom: -25px; white-space: nowrap;">
+    Quelle: Urs Gehrig, SBB, Competence-Center Predictive Maintenance
+  </small>
+</section>
+
+<section>
+  <h3>Predictive Maintenance System</h3>
+  <ul>
+    <li>Daten-Akquise</li>
+    <li>Daten-Verarbeitung</li>
+    <li>Daten-Analyse</li>
+  </ul>
+</section>
+
+<section>
+  <h2>Daten-Akquise:<br>Thermo-Scanner</h2>
+</section>
+
+<section data-background-image="images/kabine_blueprint.png">
+  <h1 style="color: black; background: rgba(255,255,255,.5);">Hardware</h1>
+</section>
+
+<section data-background-image="images/thermobox/front_nahe.jpg" data-background-size="contain"></section>
+<section data-background-image="images/thermobox/innenleben.jpg" data-background-size="contain"></section>
+<section data-background-image="images/thermobox/kameras.jpg" data-background-size="contain"></section>
+
+<section>
+  <h2>Specs</h2>
+  <table>
+    <tr>
+      <td><b>Farbkamera</b></td>
+      <td>76° HFOV & 58° VFOV</td>
+      <td style="white-space: nowrap; text-align: right;">738 CHF</td>
+    </tr>
+    <tr>
+      <td><b>IR-Kamera</b></td>
+      <td>45° HFOV & 37° VFOV</td>
+      <td style="white-space: nowrap; text-align: right;">8'360 CHF</td>
+    </tr>
+    <tr>
+      <td><b>Industrie-PC</b></td>
+      <td>Quadcore i7</td>
+      <td style="white-space: nowrap; text-align: right;">2'765 CHF</td>
+    </tr>
+    <tr>
+      <td><b>Verbindung</b></td>
+      <td>LTE Modul, Antenne</td>
+      <td style="white-space: nowrap;"></td>
+    </tr>
+    <tr>
+      <td><b>Temperatursensor</b></td>
+      <td>für Aussentemperatur</td>
+      <td style="white-space: nowrap; text-align: right;">12 CHF</td>
+    </tr>
+    <tr>
+      <td><b>Klimaregelung</b></td>
+      <td>Heizlüfter/Thermostat</td>
+      <td></td>
+    </tr>
+    <tr>
+      <td><b>Doppelwandgehäuse</b></td>
+      <td>IP55 zertifiziert</td>
+      <td style="white-space: nowrap; text-align: right;">3'286 CHF</td>
+    </tr>
+  </table>
+</section>
+
+<section>
+  <h2>Infrarotaufnahmen</h2>
+</section>
+
+<section data-background-image="images/temp-calc/BlackbodySpectrum_loglog_de.png" data-background-size="contain">
+  <h3 class="fragment fade-out" style="text-shadow: 0 0 2px #000000;background: rgba(0,0,0,0.3);">Planck Kurve</h3>
+</section>
+
+<section data-background-image="images/temp-calc/bolometerVSphotondetector.png" data-background-size="contain">
+  <h3 class="fragment fade-out" style="text-shadow: 0 0 2px #000000;background: rgba(0,0,0,0.3);">Bolometer- vs. Photonen-Detektor</h3>
+</section>
+<section data-background-image="images/temp-calc/bolometer_effect.png" data-background-size="contain"></section>
+
+<section data-background-image="images/temp-calc/emissivity_table.png" data-background-size="contain">
+  <h3 class="fragment fade-out" style="text-shadow: 0 0 2px #000000;background: rgba(0,0,0,0.3);">Emissionsgrade</h3>
+</section>
+
+<section data-background-image="images/temp-calc/LesliesCube.png" data-background-size="contain"></section>
+
+<section data-background-image="images/temp-calc/mess_situation.png" data-background-size="contain">
+  <h3 class="fragment fade-out" style="text-shadow: 0 0 2px #000000;background: rgba(0,0,0,0.3);">Mess-Situation</h3>
+</section>
+
+
+<section data-background-image="images/akquise/DLR_altstetten.jpg">
+  <h3>Standort</h3>
+</section>
+
+<section data-background-video="images/akquise/waschstrasse.mp4"
+         data-background-video-loop
+         data-background-video-muted
+         style="text-shadow: 0 0 15px #000000; text-align: left;">
+  <h3 style="text-shadow: 0 0 15px #000000">Waschstrasse</h3>
+  <ul>
+    <li>Reinigung alle 2 Wochen</li>
+    <li>Schritttempo</li>
+    <li>Stromanschluss</li>
+  </ul>
+  <br><br><br><br><br><br>
+</section>
+
+
+<section data-background-image="images/akquise/herdern-map.jpg">
+  <h2 style="text-shadow: 0 0 2px #000000;background: rgba(0,0,0,0.3);">Zürich Herdern</h2>
+  <br><br><br><br><br><br><br><br><br>
+</section>
+
+<section data-background-image="images/akquise/zurich_herdern.jpg" data-background-size="contain"></section>
+<section data-background-image="images/akquise/herdern-sichtfenster.jpg" data-background-size="contain"></section>
+<section data-background-image="images/akquise/herdern-sichtfenster-ir.jpg" data-background-size="contain"></section>
+
+<section data-background-image="images/akquise/altstetten-map.jpg">
+  <h2 style="text-shadow: 0 0 2px #000000;background: rgba(0,0,0,0.3);">Zürich Altstetten</h2>
+  <br><br><br><br><br><br><br><br><br>
+</section>
+
+<section data-background-image="images/akquise/scanner_installation.jpg"></section>
+
+<section data-background-image="images/entering-train.jpg" data-background-size="contain">
+  <h2 style="text-shadow: 0 0 15px #000000;">Aufnahmesteuerung autonom</h2>
+</section>
+<section data-background-image="images/entering-train-snow.jpg" data-background-size="contain"></section>
+<section data-background-image="images/entering-train-night.jpg" data-background-size="contain"></section>
+<section data-background-image="images/rain-train.jpg" data-background-size="contain"></section>
+
+<section data-background-video="images/software/detection/fail.mp4"
+         data-background-size="contain"
+         data-background-video-loop>
+</section>
+<section data-background-video="images/software/detection/success.mp4"
+         data-background-size="contain">
+</section>
+
+<section>
+  <h3>Detektionsalgorithmus</h3>
+</section>
+<section data-background-image="images/software/detection/background.jpg" data-background-size="contain"></section>
+<section data-background-image="images/software/detection/train.jpg" data-background-size="contain"></section>
+<section data-background-image="images/software/detection/contours.jpg" data-background-size="contain"></section>
+
+
+<section>
+  <h4>Triggering</h4>
+  <pre><code>double imageMean = calcMean(images)
+
+if (backgroundMean - imageMean &gt; backgroundMean * threshold) {
+    changeState(ENTRY)
+}</code></pre>
+</section>
+
+<section data-background-image="images/software/detection/prime-tower-map.jpg"></section>
+<section data-background-image="images/software/detection/lights-on-tracks.jpg"
+         data-background-size="contain"></section>
+
+<section>
+  <h4>Constraints</h4>
+  <table>
+    <thead>
+    <tr>
+      <th>Konstante</th>
+      <th>Wert</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>MinTimeAfterExit</td>
+      <td>60 Sekunden</td>
+    </tr>
+    <tr>
+      <td>MinTimeAfterEntry</td>
+      <td>60 Sekunden</td>
+    </tr>
+    <tr>
+      <td>MaxRecordingDuration</td>
+      <td>45 Minuten</td>
+    </tr>
+    <tr>
+      <td>ExitThreshold</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>ExitScheduleTime</td>
+      <td>20 Sekunden</td>
+    </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h3>Software Komponenten</h3>
+  <ul>
+    <li>Visible Light Reader</li>
+    <li>IR Reader</li>
+    <li>IR Compressor</li>
+    <li>Temperature Reader</li>
+    <li>Weather Reader</li>
+    <li>Uploader</li>
+  </ul>
+</section>
+
+<section data-background-image="images/software/PubSub.png"
+         data-background-size="contain">
+  <h3>Pub/Sub</h3>
+  <br><br><br><br><br><br><br><br><br><br><br><br><br>
+</section>
+<section data-background-image="images/software/aufnahme-sequenz-diagramm.png"
+         data-background-size="contain"></section>
+
+
+<section style="text-align: left;">
+  <h2>Kompression von Infrarotdaten</h2>
+  <ul>
+    <li>FLIR ATLAS SDK erzeugt SEQ Dateien</li>
+    <li>SEQ = FLIR FFF Dateien hintereinander gereiht</li>
+    <li>FFF = TIFF angereichert mit
+      <ul>
+        <li>proprietären EXIF Headern</li>
+        <li>gefüllt mit rohen A/D Counts</li>
+      </ul>
+    </li>
+  </ul>
+</section>
+
+<section style="text-align: left;">
+  <h3>SEQ Dateigrösse</h3>
+  <p>
+    20 Minuten<br>
+    <span class="fragment">* 60 Sekunden<br></span>
+    <span class="fragment">* 30 Frames<br></span>
+    <span class="fragment">* 16 Bit<br></span>
+    <span class="fragment">* 640 Pixel<br></span>
+    <span class="fragment">* 512 Pixel<br></span>
+    <span class="fragment"><b style="border-bottom: 3px double">= 189 GiB</b></span>
+  </p>
+</section>
+<section style="text-align: left;">
+  <h3>SEQ Dateigrösse</h3>
+  <p>
+    20 Minuten<br>
+    * 60 Sekunden<br>
+    * 1 Frame<br>
+    * 16 Bit<br>
+    * 640 Pixel<br>
+    * 512 Pixel<br>
+    <b style="border-bottom: 3px double">= 6.3 GiB</b>
+  </p>
+</section>
+
+<section>
+  <h3>Frames in Video komprimieren</h3>
+  <p>
+    Es gibt keinen 16 Bit Codec!
+  </p>
+  <ol>
+    <li>Kleinster und grösster Wert bestimmen</li>
+    <li>Jedem Pixel den kleinsten Wert abziehen</li>
+    <li>Die Auflösung auf 8 Bit reduzieren</li>
+    <li>Encodieren</li>
+  </ol>
+</section>
+
+<section>
+  <h3>Verlust berechnen</h3>
+  <pre style="text-align: center;"><code>Präzisionsverlust = Max(0, (1 - (256f / (max - min))) * 100)</code></pre>
+  <img src="images/software/compression-precision-loss.png">
+  <br>
+</section>
+
+<section>
+  <h3>Verlust berechnen</h3>
+  <table>
+    <thead>
+    <tr>
+      <th>Verlust</th>
+      <th>Genauigkeit</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>0%</td>
+      <td>0.01°C</td>
+    </tr>
+    <tr>
+      <td>100%</td>
+      <td>0.625°C</td>
+    </tr>
+    <tr>
+      <td>80%</td>
+      <td class="fragment grow">0.125°C</td>
+    </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <h3>Monitoring Tools</h3>
+</section>
+
+<section data-background-image="images/software/monitoring-screenshot.jpg" data-background-size="contain"></section>
+<section data-background-image="images/software/screenshot-thermobox-cockpit.png"
+         data-background-size="contain"></section>
+
+<section>
+  <h3>Weitere Tools ...</h3>
+  <ul>
+    <li>Sentry Error Tracking</li>
+    <li>Teamviewer Remote</li>
+    <li>Logs</li>
+  </ul>
+</section>
+
+<section>
+  <h3>Aufnahmephasen</h3>
+  <table>
+    <thead>
+    <tr>
+      <th style="white-space: nowrap;">Phase Nr.</th>
+      <th>Zeitraum</th>
+      <th style="white-space: nowrap;">Aufnahmen</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>1</td>
+      <td style="white-space: nowrap;">20.11.2017 - 29.11.2017</td>
+      <td style="text-align: right;">273</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td style="white-space: nowrap;">19.12.2017 - 07.01.2018</td>
+      <td style="text-align: right;">306</td>
+    </tr>
+    <tr>
+      <td style="text-align: right;" colspan="3">
+        <b style="border-bottom: 3px double;">579</b>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <img src="images/akquise/histogram-duration.png">
+</section>
+
+
+<section>
+  <h2>Daten-Verarbeitung:<br>Post Processing</h2>
+</section>
+
+<section data-background-video="images/pipeline/basler-moving-train.mp4"
+         data-background-video-muted
+         data-background-video-loop>
+  <h3 class="fragment fade-out">Input</h3>
+</section>
+
+<section data-background-image="images/pipeline/calibration/cal1.jpg"
+         data-background-size="contain">
+  <h3 class="fragment fade-out">Kalibration</h3>
+</section>
+
+<section data-background-image="images/pipeline/calibration/calibration_window.jpg"
+         data-background-size="contain">
+</section>
+
+<section data-background-video="images/pipeline/calibration/checkerboard.mp4"
+         data-background-video-muted
+         data-background-size="contain">
+</section>
+
+<section data-background-image="images/pipeline/calibration/found.jpg"
+         data-background-size="contain">
+</section>
+
+<section data-background-image="images/pipeline/frames.jpg">
+  <h3 class="fragment fade-out" style="color: #333; background: rgba(255,255,255,.5);">Frames extrahieren</h3>
+</section>
+
+<section data-background-image="images/pipeline/undistort/distorted.jpg">
+  <h3 class="fragment fade-out">Entzerren</h3>
+</section>
+<section data-background-image="images/pipeline/undistort/undistorted.jpg"></section>
+
+<section data-background-image="images/pipeline/undistort/undistorted.jpg">
+  <h3 class="fragment fade-out">Ausrichten</h3>
+</section>
+<section data-background-image="images/pipeline/straighten/straight.jpg"></section>
+
+<section data-background-image="images/pipeline/cropped.jpg" data-background-size="contain">
+  <h3 class="fragment fade-out">Zuschneiden</h3>
+</section>
+
+<section data-background-image="images/pipeline/rectify/unrectified.jpg" data-background-size="contain">
+  <h3 class="fragment fade-out">Rektifizieren</h3>
+</section>
+<section data-background-image="images/pipeline/rectify/rectified.jpg" data-background-size="contain"></section>
+
+<section data-background-image="images/pipeline/rectify/upper.jpg" data-background-size="contain"></section>
+<section data-background-image="images/pipeline/rectify/lines.jpg" data-background-size="contain"></section>
+<section data-background-image="images/pipeline/rectify/lower.jpg" data-background-size="contain"></section>
+<section data-background-image="images/pipeline/rectify/lower-line.jpg" data-background-size="contain"></section>
+
+<section data-background-image="images/pipeline/pano.jpg" data-background-size="contain">
+  <h3 class="fragment fade-out">Stitching</h3>
+</section>
+
+<section data-background-image="images/pipeline/stitch/template.jpg" data-background-size="contain"></section>
+<section data-background-image="images/pipeline/stitch/match.jpg" data-background-size="contain"></section>
+
+<section data-background-image="images/pipeline/split/split_all_compact.jpg" data-background-size="contain">
+  <h3 class="fragment fade-out">Wagons ausschneiden</h3>
+</section>
+
+<section data-background-image="images/pipeline/two_panos.jpg" data-background-size="contain">
+  <h3 style="margin-top: -20%;">Output</h3>
+</section>
+
+<section>
+  <img src="images/akquise/histogram-width.png">
+</section>
+
+<section>
+  <h2>Daten-Analyse:<br>Thermoboard</h2>
+</section>
+
+<section data-background-video="images/thermoboard-screencast.mp4"
+         data-background-size="contain"
+         data-background-video-muted>
+</section>
+
+<section data-background-color="white"
+         data-background-image="images/master-diagram.png"
+         data-background-size="contain"></section>
+<section data-background-color="white"
+         data-background-image="images/master-diagram-acquisition.png"
+         data-background-size="contain"></section>
+<section data-background-color="white"
+         data-background-image="images/master-diagram-processing.png"
+         data-background-size="contain"></section>
+<section data-background-color="white"
+         data-background-image="images/master-diagram-analysis.png"
+         data-background-size="contain"></section>
+
+<section data-background-image="images/akquise/scanner_demo.jpg"
+         data-background-size="contain"
+         style="text-shadow: 0 0 15px #000000;">
+  <div>
+    <h2 style="text-shadow: 0 0 15px #000000;">Fazit</h2>
+    <ul style="background-color: rgba(0,0,0,.8); margin-left: -20px; padding: 10px;">
+      <li style="margin-left: 60px;">interdisziplinäres Projekt</li>
+      <li style="margin-left: 60px;">einsatzbereite Lösung</li>
+      <li style="margin-left: 60px;">grosses Potential</li>
+    </ul>
+  </div>
+</section>
+<section data-background-image="images/akquise/scanner_demo.jpg"
+         data-background-size="contain"
+         style="text-shadow: 0 0 15px #000000;">
+  <div>
+    <h2 style="text-shadow: 0 0 15px #000000;">Wie weiter</h2>
+    <ul style="background-color: rgba(0,0,0,.8); margin-left: -20px; padding: 10px;">
+      <li style="margin-left: 60px;">26.01. Auswertung mit Chef Technik Phase 2</li>
+      <li style="margin-left: 60px;">13.02. Projektvorstellung in der SBB</li>
+      <li style="margin-left: 60px;">13.02. Anschliessend Meeting Weiterführung</li>
+      <li style="margin-left: 60px;">Proof of Detection mit DPZ Wagon</li>
+    </ul>
+  </div>
+</section>
+
+<section data-background-image="images/goodbye.jpg"
+         style="text-shadow: 0 0 15px #000000;">
+  <div class="fragment fade-out">
+    <h2 style="text-shadow: 0 0 15px #000000;">Nächste Schritte</h2>
+    <ul style="background-color: rgba(0,0,0,.8); margin-left: -20px; padding: 10px;">
+      <li style="margin-left: 60px;">Integration RFID Reader</li>
+      <li style="margin-left: 60px;">Integration SBB Fahrplansystem</li>
+      <li style="margin-left: 60px;">Skalierende Serverinfrastruktur aufbauen</li>
+      <li style="margin-left: 60px;">Mehrere Thermo-Scanner bauen</li>
+    </ul>
+  </div>
+</section>
+
+
+  </div>
+</div>
+<script>
+
+  // More info https://github.com/hakimel/reveal.js#configuration
+  Reveal.initialize({
+    controls: false,
+    progress: true,
+    history: true,
+    center: true,
+
+    transition: 'fade', // none/fade/slide/convex/concave/zoom
+
+    // More info https://github.com/hakimel/reveal.js#dependencies
+    dependencies: [
+      { src: 'lib/js/classList.js', condition: function () { return !document.body.classList; }},
+      { src: 'plugin/markdown/marked.js', condition: function () { return !!document.querySelector('[data-markdown]'); }},
+      { src: 'plugin/markdown/markdown.js', condition: function () { return !!document.querySelector('[data-markdown]'); }},
+      { src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); }},
+      { src: 'plugin/zoom-js/zoom.js', async: true},
+      { src: 'plugin/notes/notes.js', async: true}
+    ]
+  });
+
+</script>
+
+</body>
+</html>
